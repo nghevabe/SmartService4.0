@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import stackjava.com.sbjwt.entities.UserEntity;
+import stackjava.com.sbjwt.exception.AppException;
 import stackjava.com.sbjwt.repo.UserRepo;
 
 
@@ -37,8 +38,15 @@ public class UserService {
 	}
 
 	public UserEntity loadUserByUsername(String username) {
-		//return userRepo.findByUsername(username).orElseThrow( () -> new UsernameNotFoundException(username + " not found") );
-		return userRepo.findByUsername(username).get();
+//		if(userRepo.findByUsername(username).isPresent())
+//		{
+//			return userRepo.findByUsername(username).get();
+//		} else{
+//			throw new AppException("Can not find Username");
+//		}
+
+		return userRepo.findByUsername(username).orElseThrow( () -> new UsernameNotFoundException(username + " not found") );
+		//return userRepo.findByUsername(username).get();
 	}
 
 	public UserEntity getUserByUsername(String username) {

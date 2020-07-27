@@ -99,12 +99,15 @@ public class UserRestController {
 				result = jwtService.generateTokenLogin(userEntity.getUsername());
 				httpStatus = HttpStatus.OK;
 			} else {
-				result = "Wrong userId and password";
+				result = "Wrong password";
 				httpStatus = HttpStatus.BAD_REQUEST;
+				//throw new AppException("Wrong userId and password");
 			}
 		} catch (Exception ex) {
-			result = "Server Error";
+			result = "Can not find Username";
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			//throw new AppException(ex.getMessage().toString());
+
 		}
 		return new ResponseEntity<String>(result, httpStatus);
 	}
