@@ -17,6 +17,7 @@ import com.nimbusds.jwt.SignedJWT;
 public class JwtService {
 
 	public static final String USERNAME = "username";
+	public static final String ID = "id";
 	public static final String SECRET_KEY = "11111111111111111111111111111111";
 	public static final int EXPIRE_TIME = 86400000;
 
@@ -80,6 +81,18 @@ public class JwtService {
 			e.printStackTrace();
 		}
 		return username;
+	}
+
+	public int getIdFromToken(String token) {
+		int id = 0;
+		try {
+			JWTClaimsSet claims = getClaimsFromToken(token);
+			id = claims.getIntegerClaim(USERNAME);
+			System.out.println("XXX - "+id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return id;
 	}
 
 	private byte[] generateShareSecret() {
