@@ -44,22 +44,11 @@ public class UserRestController {
 		return new ResponseEntity<Object>("Not Found User", HttpStatus.NO_CONTENT);
 	}
 
-//    /* ---------------- GET USER BY USERNAME ------------------------ */
-//    @CrossOrigin
-//    @RequestMapping(value = "/user_detail", method = RequestMethod.GET)
-//    public ResponseEntity<Object> getUserByUsername(@RequestParam("username") String username) {
-//        UserEntity userEntity = userService.loadUserByUsername(username);
-//		if (userEntity != null) {
-//            return new ResponseEntity<Object>(userEntity, HttpStatus.OK);
-//        }else {
-//			return new ResponseEntity<Object>("Not Found User", HttpStatus.NO_CONTENT);
-//		}
-//
-//    }
-
 	@CrossOrigin
 	@GetMapping("/user_detail")
-	public ResponseEntity<Object> getUserByUsername(@RequestParam("username") String username) {
+	public ResponseEntity<Object> getUserByUsername(@RequestHeader(name="Authorization") String token) {
+
+		String username = jwtService.getUsernameFromToken(token);
 		UserEntity userEntity = userService.getUserByUsername(username);
 		if (userEntity != null) {
 			return new ResponseEntity<Object>(userEntity, HttpStatus.OK);
