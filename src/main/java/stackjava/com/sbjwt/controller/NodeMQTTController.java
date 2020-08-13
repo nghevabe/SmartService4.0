@@ -45,13 +45,37 @@ public class NodeMQTTController {
 
         String type = houseDeviceEntity.getType();
         String message = "";
-        int lightValue = 255;
+        //int lightValue = 255;
+        int powerValue = 0;
 
         if(type.equals("Fan") || type.equals("Glass") || type.equals("Door")) {
 
+            if (power != null) {
+
+                powerValue = (int) (((float) 950 / 100) * Integer.parseInt(power));
+                if (powerValue < 100) {
+                    powerValue = 100;
+                }
+                
+                String stringPowerValue = Integer.toString(powerValue);
+
+                if (stringPowerValue.length() == 1) {
+                    stringPowerValue = "00" + stringPowerValue;
+                }
+
+                if (stringPowerValue.length() == 2) {
+                    stringPowerValue = "0" + stringPowerValue;
+                }
+
+                message = stringPowerValue ;
+
+            } else {
+                message = "475";
+            }
+
             switch (signal) {
                 case "ON":
-                    message = "ON0";
+                    message = message + "0";
                     break;
                 case "OFF":
                     message = "OFF0";
@@ -59,30 +83,24 @@ public class NodeMQTTController {
                 default:
                     message = "fail";
             }
-
         }
 
         if(type.equals("Light")){
 
             if(power != null){
-
-
-                lightValue = (int) (((float) 255/100) * Integer.parseInt(power));
-                System.out.println("power: "+lightValue);
-
+                powerValue = (int) (((float) 255/100) * Integer.parseInt(power));
+                System.out.println("power: "+powerValue);
             }
-            String stringLightValue = Integer.toString(lightValue);
+            String stringLightValue = Integer.toString(powerValue);
 
-            if(stringLightValue.length() == 1)
-            {
+            if(stringLightValue.length() == 1) {
                 stringLightValue =  "00"+stringLightValue;
             }
 
-            if(stringLightValue.length() == 2)
-            {
+            if(stringLightValue.length() == 2) {
                 stringLightValue =  "0"+stringLightValue;
             }
-            
+
             if(lightColor != null) {
 
                 if (lightColor.equals("RED")) {
@@ -110,7 +128,7 @@ public class NodeMQTTController {
                 }
 
                 if (lightColor.equals("WHITE")) {
-                    message = "255255255";
+                    message = stringLightValue + stringLightValue + stringLightValue;
                 }
             } else {
                 message = "255255255";
