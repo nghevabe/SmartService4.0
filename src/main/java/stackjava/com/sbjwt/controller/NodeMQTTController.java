@@ -24,22 +24,28 @@ public class NodeMQTTController {
     public ResponseEntity<String> publishData(@PathVariable int id, @RequestParam String signal
             , @RequestParam(required=false) String lightColor, @RequestParam(required=false) String power) {
 
-        if(lightColor==null){
-            lightColor="none";
-        }
+            String message = createMessage(id, signal, lightColor, power);
 
-        if(power==null){
-            power="none";
-        }
+            HouseDeviceEntity houseDeviceEntity = houseDeviceService.findById(id);
+            String topic = houseDeviceEntity.getTopic();
+
+            if(message.equals("fail"))
+            {
+                return new ResponseEntity<String>("Invalid Signal", HttpStatus.CREATED);
+            }
+            else {
+                return sendMessage(message, topic);
+            }
+
+    }
+
+    public String createMessage(int id, String signal, String lightColor, String power){
 
         HouseDeviceEntity houseDeviceEntity = houseDeviceService.findById(id);
 
-        System.out.println("Topic: "+houseDeviceEntity.getTopic());
-        System.out.println("type: "+houseDeviceEntity.getType());
-
-        String topic = houseDeviceEntity.getTopic();
         String type = houseDeviceEntity.getType();
         String message = "";
+        int lightValue = 255;
 
         if(type.equals("Fan") || type.equals("Glass") || type.equals("Door")) {
 
@@ -51,28 +57,81 @@ public class NodeMQTTController {
                     message = "OFF0";
                     break;
                 default:
-                    return new ResponseEntity<String>("Invalid Signal", HttpStatus.CREATED);
+                    message = "fail";
             }
 
         }
 
         if(type.equals("Light")){
+
+            if(power != null){
+
+
+                lightValue = (int) (((float) 255/100) * Integer.parseInt(power));
+                System.out.println("power: "+lightValue);
+
+            }
+            String stringLightValue = Integer.toString(lightValue);
+
+            if(stringLightValue.length() == 1)
+            {
+                stringLightValue =  "00"+stringLightValue;
+            }
+
+            if(stringLightValue.length() == 2)
+            {
+                stringLightValue =  "0"+stringLightValue;
+            }
+            
+            if(lightColor != null) {
+
+                if (lightColor.equals("RED")) {
+                    message = stringLightValue + "000000";
+                }
+
+                if (lightColor.equals("GREEN")) {
+                    message = "000" +stringLightValue + "000";
+                }
+
+                if (lightColor.equals("BLUE")) {
+                    message = "000000" + stringLightValue;
+                }
+
+                if (lightColor.equals("YELLOW")) {
+                    message = stringLightValue + stringLightValue + "000";
+                }
+
+                if (lightColor.equals("VIOLET")) {
+                    message =  stringLightValue + "000" + stringLightValue;
+                }
+
+                if (lightColor.equals("AQUA")) {
+                    message = "000" + stringLightValue + stringLightValue;
+                }
+
+                if (lightColor.equals("WHITE")) {
+                    message = "255255255";
+                }
+            } else {
+                message = "255255255";
+            }
+
             switch (signal) {
                 case "ON":
                     // only me
                     if(id == 505) {
-                        message = "2552552551";
+                        message = message+"1";
                     }
                     if(id == 506){
-                        message = "2552552552";
+                        message = message+"2";
                     }
                     if(id == 507){
-                        message = "2552552553";
+                        message = message+"3";
                     }
                     // only me
 
 //                    // for public
-//                    message = "2552552551";
+//                    message = message+"1";
 //                    // for public
 
                     break;
@@ -94,19 +153,15 @@ public class NodeMQTTController {
 //                    // for public
                     break;
                 default:
-                    return new ResponseEntity<String>("Invalid Signal", HttpStatus.CREATED);
+                    message = "fail";
             }
         }
 
-            return sendMessage(message,topic);
-
-
+        return message;
     }
 
     public ResponseEntity<String> sendMessage(String message, String topic){
 
-        //String topic        = "SMART_PROJECT/ESP_01";
-        //String content      = mes;
         int qos             = 0;
         String broker       = "tcp://tailor.cloudmqtt.com:11359";
         String clientId     = "JavaSample";
