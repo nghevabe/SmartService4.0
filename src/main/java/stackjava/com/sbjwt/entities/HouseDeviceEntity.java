@@ -15,6 +15,9 @@ public class HouseDeviceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "user_id")
+    private int userId;
+
     @Column(name = "name_")
     private String name;
 
@@ -42,9 +45,10 @@ public class HouseDeviceEntity {
     public HouseDeviceEntity() {
     }
 
-    public HouseDeviceEntity(int id, String name, String type, String idWifi, String passWifi, String topic,
+    public HouseDeviceEntity(int id, int userId ,String name, String type, String idWifi, String passWifi, String topic,
                              String lightColor, String powerValue, String powerOn) {
         this.id = id;
+        this.userId = userId;
         this.name = name;
         this.type = type;
         this.idWifi = idWifi;
@@ -61,6 +65,14 @@ public class HouseDeviceEntity {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getName() {

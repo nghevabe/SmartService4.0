@@ -10,23 +10,44 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import stackjava.com.sbjwt.entities.HouseDeviceEntity;
+import stackjava.com.sbjwt.entities.UserEntity;
 import stackjava.com.sbjwt.service.HouseDeviceService;
+import stackjava.com.sbjwt.service.JwtService;
+import stackjava.com.sbjwt.service.UserService;
 
 @RestController
 @RequestMapping("/rest")
 public class NodeMQTTController {
 
     @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
     HouseDeviceService houseDeviceService;
 
     @CrossOrigin
     @RequestMapping(value = "/publish_signal/{id}", method = RequestMethod.POST)
-    public ResponseEntity<String> publishData(@PathVariable int id, @RequestParam String signal
-            , @RequestParam(required=false) String lightColor, @RequestParam(required=false) String power) {
+    public ResponseEntity<String> publishData(
+              @RequestHeader(name="Authorization") String token
+            , @PathVariable int id
+            , @RequestParam String signal
+            , @RequestParam(required=false) String lightColor
+            , @RequestParam(required=false) String power) {
+
+            String username = jwtService.getUsernameFromToken(token);
+            UserEntity userEntity = userService.getUserByUsername(username);
 
             String message = createMessage(id, signal, lightColor, power);
 
             HouseDeviceEntity houseDeviceEntity = houseDeviceService.findById(id);
+
+            if(userEntity.getId() != houseDeviceEntity.getUserId()){
+                return new ResponseEntity<String>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
+            }
+
             String topic = houseDeviceEntity.getTopic();
 
             if(message.equals("fail"))

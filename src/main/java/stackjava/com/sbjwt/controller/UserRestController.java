@@ -50,6 +50,7 @@ public class UserRestController {
 
 		String username = jwtService.getUsernameFromToken(token);
 		UserEntity userEntity = userService.getUserByUsername(username);
+
 		if (userEntity != null) {
 			return new ResponseEntity<Object>(userEntity, HttpStatus.OK);
 		}
