@@ -38,7 +38,7 @@ public class HouseDeviceRestController {
 //    public ResponseEntity<List<HouseDeviceEntity>> getAllUser() {
 //        return new ResponseEntity<List<HouseDeviceEntity>>(houseDeviceService.findAll(), HttpStatus.OK);
 //    }
-    
+
     @CrossOrigin
     @RequestMapping(value = "/house_devices", method = RequestMethod.GET)
     public ResponseEntity<List<HouseDeviceEntity>> getAllUser(@RequestHeader(name="Authorization") String token) {
