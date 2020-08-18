@@ -50,8 +50,7 @@ public class NodeMQTTController {
 
             String topic = houseDeviceEntity.getTopic();
 
-            if(message.equals("fail"))
-            {
+            if(message.equals("fail")) {
                 return new ResponseEntity<String>("Invalid Signal", HttpStatus.CREATED);
             }
             else {
