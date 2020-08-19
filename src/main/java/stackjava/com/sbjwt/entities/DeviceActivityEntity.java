@@ -16,30 +16,38 @@ public class DeviceActivityEntity {
     private int id;
 
     @Column(name = "device_id")
-    private int deviceId;
+    private int deviceid;
 
     @Column(name = "power_on")
-    private String powerOn;
+    private boolean poweron;
 
     @Column(name = "power_value")
-    private String powerValue;
+    private int powervalue;
 
     @Column(name = "light_color")
-    private String lightColor;
+    private String lightcolor;
 
     @Column(name = "datetime_")
-    private String dateTime;
+    private String datetime;
 
     public DeviceActivityEntity() {
     }
 
-    public DeviceActivityEntity(int id, int deviceId, String powerOn, String powerValue, String lightColor, String dateTime) {
+    public DeviceActivityEntity(int id, int deviceid, boolean poweron, int powervalue, String lightcolor, String datetime) {
         this.id = id;
-        this.deviceId = deviceId;
-        this.powerOn = powerOn;
-        this.powerValue = powerValue;
-        this.lightColor = lightColor;
-        this.dateTime = dateTime;
+        this.deviceid = deviceid;
+        this.poweron = poweron;
+        this.powervalue = powervalue;
+        this.lightcolor = lightcolor;
+        this.datetime = datetime;
+    }
+
+    public DeviceActivityEntity(int deviceid, boolean poweron, int powervalue, String lightcolor, String datetime) {
+        this.deviceid = deviceid;
+        this.poweron = poweron;
+        this.powervalue = powervalue;
+        this.lightcolor = lightcolor;
+        this.datetime = datetime;
     }
 
     public int getId() {
@@ -50,43 +58,43 @@ public class DeviceActivityEntity {
         this.id = id;
     }
 
-    public int getDeviceId() {
-        return deviceId;
+    public int getDeviceid() {
+        return deviceid;
     }
 
-    public void setDeviceId(int deviceId) {
-        this.deviceId = deviceId;
+    public void setDeviceid(int deviceid) {
+        this.deviceid = deviceid;
     }
 
-    public String getPowerOn() {
-        return powerOn;
+    public boolean isPoweron() {
+        return poweron;
     }
 
-    public void setPowerOn(String powerOn) {
-        this.powerOn = powerOn;
+    public void setPoweron(boolean poweron) {
+        this.poweron = poweron;
     }
 
-    public String getPowerValue() {
-        return powerValue;
+    public int getPowervalue() {
+        return powervalue;
     }
 
-    public void setPowerValue(String powerValue) {
-        this.powerValue = powerValue;
+    public void setPowervalue(int powervalue) {
+        this.powervalue = powervalue;
     }
 
-    public String getLightColor() {
-        return lightColor;
+    public String getLightcolor() {
+        return lightcolor;
     }
 
-    public void setLightColor(String lightColor) {
-        this.lightColor = lightColor;
+    public void setLightcolor(String lightcolor) {
+        this.lightcolor = lightcolor;
     }
 
-    public String getDateTime() {
-        return dateTime;
+    public String getDatetime() {
+        return datetime;
     }
 
-    public void setDateTime(String dateTime) {
-        this.dateTime = dateTime;
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
     }
 }

@@ -19,4 +19,10 @@ public interface DeviceActivityRepo extends JpaRepository<DeviceActivityEntity, 
     @Query(value = " call allDeviceActivityByUserName(:userName)", nativeQuery = true)
     List<DeviceActivityEntity> getDeviceActivityByUserName(@Param("userName") String userName);
 
+    @Query(value = " call saveDeviceActivity(:deviceId, :powerOn, :powerValue, :lightColor)", nativeQuery = true)
+    List<DeviceActivityEntity> saveDeviceActivity(@Param("deviceId") int userId,
+                                                  @Param("powerOn") boolean powerOn,
+                                                  @Param("powerValue") int powerValue,
+                                                  @Param("lightColor") String lightColor);
+
 }

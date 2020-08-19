@@ -43,4 +43,30 @@ public class DeviceActivityRestController {
         return new ResponseEntity<List<DeviceActivityEntity>>(deviceActivityService.findAllByUserName(username), HttpStatus.OK);
     }
 
+    @CrossOrigin
+    @RequestMapping(value = "/create_activity", method = RequestMethod.POST)
+    public ResponseEntity<String> createDeviceActivity(@RequestBody DeviceActivityEntity deviceActivityEntity) {
+
+        if (deviceActivityService.add(deviceActivityEntity)) {
+            return new ResponseEntity<String>("Created!", HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<String>("Activity Existed!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+//    @CrossOrigin
+//    @RequestMapping(value = "/test_01", method = RequestMethod.POST)
+//    public ResponseEntity<String> createTest(@RequestBody DeviceActivityEntity deviceActivityEntity) {
+//
+//        DeviceActivityEntity deviceActivityEntity1 = new DeviceActivityEntity();
+//        //deviceActivityEntity1.setDeviceId(505);
+//
+//        System.out.println("Device ID: "+deviceActivityEntity.getId());
+//        System.out.println("Device ID 2: "+deviceActivityEntity.getDeviceid());
+//       // System.out.println("Device light_color: "+deviceActivityEntity.getDeviceId());
+//        //System.out.println("Device light_color: "+deviceActivityEntity.getLightColor());
+//
+//        return new ResponseEntity<String>("OK", HttpStatus.CREATED);
+//    }
+
 }

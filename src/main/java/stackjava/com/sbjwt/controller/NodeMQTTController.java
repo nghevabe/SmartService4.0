@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import stackjava.com.sbjwt.entities.HouseDeviceEntity;
 import stackjava.com.sbjwt.entities.UserEntity;
+import stackjava.com.sbjwt.service.DeviceActivityService;
 import stackjava.com.sbjwt.service.HouseDeviceService;
 import stackjava.com.sbjwt.service.JwtService;
 import stackjava.com.sbjwt.service.UserService;
@@ -27,6 +28,9 @@ public class NodeMQTTController {
 
     @Autowired
     HouseDeviceService houseDeviceService;
+
+    @Autowired
+    DeviceActivityService deviceActivityService;
 
     @CrossOrigin
     @RequestMapping(value = "/publish_signal/{id}", method = RequestMethod.POST)
@@ -54,6 +58,24 @@ public class NodeMQTTController {
                 return new ResponseEntity<String>("Invalid Signal", HttpStatus.CREATED);
             }
             else {
+
+                if(sendMessage(message,topic).getBody().equals("Publish")){
+
+                    boolean powerOn = false;
+                    if(signal.equals("ON")){
+                        powerOn = true;
+                    } else {
+                        powerOn = false;
+                    }
+
+                    if (deviceActivityService.saveActivity(id, powerOn, Integer.parseInt(power), lightColor)) {
+                        return new ResponseEntity<String>("Created!", HttpStatus.CREATED);
+                    } else {
+                        return new ResponseEntity<String>("Activity Existed!", HttpStatus.BAD_REQUEST);
+                    }
+
+                }
+
                 return sendMessage(message, topic);
             }
 

@@ -61,6 +61,9 @@ public class UserRestController {
     @CrossOrigin
 	@RequestMapping(value = "/users", method = RequestMethod.POST)
 	public ResponseEntity<String> createUser(@RequestBody UserEntity userEntity) {
+
+		//System.out.println("User Name" + userEntity.getUsername());
+
 		if (userService.add(userEntity)) {
 			return new ResponseEntity<String>("Created!", HttpStatus.CREATED);
 		} else {
@@ -102,12 +105,6 @@ public class UserRestController {
 		return new ResponseEntity<String>(result, httpStatus);
 	}
 
-    @CrossOrigin
-    @RequestMapping(value = "/test", method = RequestMethod.POST)
-    public String test(HttpServletRequest request) {
 
-
-        return  "Xin Chao Test";
-    }
 
 }
