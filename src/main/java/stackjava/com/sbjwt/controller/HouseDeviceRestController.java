@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +67,30 @@ public class HouseDeviceRestController {
 
         //createGroupTimeActivityArray(token);
 
-
+        //First Employee
+//        JSONObject employeeDetails = new JSONObject();
+//        employeeDetails.put("firstName", "Linh Tran");
+//        employeeDetails.put("lastName", "Gupta");
+//        employeeDetails.put("website", "howtodoinjava.com");
+//
+//        JSONObject employeeObject = new JSONObject();
+//        employeeObject.put("employee", employeeDetails);
+//
+//        //Second Employee
+//        JSONObject employeeDetails2 = new JSONObject();
+//        employeeDetails2.put("firstName", "Brian");
+//        employeeDetails2.put("lastName", "Schultz");
+//        employeeDetails2.put("website", "example.com");
+//
+//        JSONObject employeeObject2 = new JSONObject();
+//        employeeObject2.put("employee", employeeDetails2);
+//
+//        //Add employees to list
+//        JSONArray employeeList = new JSONArray();
+//        employeeList.add(employeeObject);
+//        employeeList.add(employeeObject2);
+//
+//        System.out.println(employeeList.toJSONString());
 
         return "OK" ;
     }
