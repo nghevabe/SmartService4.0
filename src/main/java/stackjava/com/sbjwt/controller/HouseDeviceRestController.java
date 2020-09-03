@@ -51,8 +51,8 @@ public class HouseDeviceRestController {
     }
 
     @CrossOrigin
-    @RequestMapping(value = "/test_group", method = RequestMethod.GET)
-    public String getActivitiesByToken(@RequestHeader(name="Authorization") String token) {
+    @RequestMapping(value = "/analysis_activity_data", method = RequestMethod.GET)
+    public ResponseEntity<List<DeviceActivityEntity>> getActivitiesByToken(@RequestHeader(name="Authorization") String token) {
 
         String username = jwtService.getUsernameFromToken(token);
 
@@ -63,125 +63,14 @@ public class HouseDeviceRestController {
         List<DeviceActivityEntity> listResponseEntity
                 = deviceActivityService.findAllByUserName(username);
 
-        analysisHabit.createGroupTimeActivityArray(listResponseEntity);
+        //analysisHabit.createGroupTimeActivityArray(listResponseEntity);
 
-        //createGroupTimeActivityArray(token);
+        analysisHabit.readData();
+        int x = analysisHabit.timeClassify("2020-09-01 20:07:05");
 
-        //First Employee
-//        JSONObject employeeDetails = new JSONObject();
-//        employeeDetails.put("firstName", "Linh Tran");
-//        employeeDetails.put("lastName", "Gupta");
-//        employeeDetails.put("website", "howtodoinjava.com");
-//
-//        JSONObject employeeObject = new JSONObject();
-//        employeeObject.put("employee", employeeDetails);
-//
-//        //Second Employee
-//        JSONObject employeeDetails2 = new JSONObject();
-//        employeeDetails2.put("firstName", "Brian");
-//        employeeDetails2.put("lastName", "Schultz");
-//        employeeDetails2.put("website", "example.com");
-//
-//        JSONObject employeeObject2 = new JSONObject();
-//        employeeObject2.put("employee", employeeDetails2);
-//
-//        //Add employees to list
-//        JSONArray employeeList = new JSONArray();
-//        employeeList.add(employeeObject);
-//        employeeList.add(employeeObject2);
-//
-//        System.out.println(employeeList.toJSONString());
-
-        return "OK" ;
+        return new ResponseEntity<List<DeviceActivityEntity>>(AnalysisHabit.listActivity, HttpStatus.OK);
     }
 
-    public void createGroupDeviceActivityArray(List<DeviceActivityEntity> listGroupDeviceActivity){
-
-        int columns = 10;
-        int rows = listGroupDeviceActivity.size();
-
-        DeviceActivityEntity groupTimeActivityArray[][] = new DeviceActivityEntity[columns][rows];
-
-    }
-
-//    public void createGroupTimeActivityArray(String token){
-//
-//        DeviceActivityEntity groupTimeActivityArray[][] = new DeviceActivityEntity[10][10];
-//
-//        int indexRow = 0;
-//        int indexColumn = 0;
-//
-//        String username = jwtService.getUsernameFromToken(token);
-//
-//        List<DeviceActivityEntity> listResponseEntity
-//                = deviceActivityService.findAllByUserName(username);
-//
-//
-//        for(int i=0; i<listResponseEntity.size()-1;i++){
-//
-//            if(i==0){
-//                groupTimeActivityArray[0][0] = listResponseEntity.get(0);
-//                indexRow++;
-//            }
-//
-//            String stringTimer1 = listResponseEntity.get(i).getDatetime();
-//            String stringTimer2 = listResponseEntity.get(i+1).getDatetime();
-//
-//            int kq = getMinuteDurations(stringTimer1, stringTimer2);
-//
-//            if(kq < 15){
-//                groupTimeActivityArray[indexColumn][indexRow] = listResponseEntity.get(i+1);
-//                indexRow++;
-//            } else {
-//                indexColumn++;
-//                indexRow = 0;
-//                groupTimeActivityArray[indexColumn][indexRow] = listResponseEntity.get(i+1);
-//                indexRow++;
-//            }
-//
-//
-//        }
-//
-//        for(int i=0; i < 10 ; i++)
-//        {
-//            List<DeviceActivityEntity> listGroupDeviceActivity = null;
-//
-//            for(int j=0; j < 10 ; j++){
-//
-//                if(groupTimeActivityArray[i][j] != null) {
-//                    System.out.print("  " + groupTimeActivityArray[i][j].getId());
-//                    listGroupDeviceActivity.add(groupTimeActivityArray[i][j]);
-//                }
-//
-//            }
-//
-//            System.out.println();
-//
-//        }
-//
-//    }
-//
-//    public int getMinuteDurations(String firstDate, String secondDate){
-//
-//        int result = 0;
-//
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-yy hh:mm:ss");
-//
-//        try {
-//            Date dateTime1 = dateFormat.parse(firstDate);
-//            Date dateTime2 = dateFormat.parse(secondDate);
-//
-//            long diffInMillies = Math.abs(dateTime2.getTime() - dateTime1.getTime());
-//            long minutesDurations = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
-//
-//            result = (int) minutesDurations;
-//
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return result;
-//    }
 
 
 }
