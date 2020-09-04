@@ -57,10 +57,6 @@ public class AnalysisHabit {
 
     public void createGroupDeviceActivityArray(List<DeviceActivityEntity> listGroupDeviceActivity, JSONObject timeGroupDetails){
 
-        //String username = jwtService.getUsernameFromToken(token);
-
-        //List<HouseDeviceEntity> listHouseDevice = houseDeviceService.findAllByUserName(username);
-
         int columns = listHouseDevice.size();
         int rows = listGroupDeviceActivity.size();
 
@@ -111,6 +107,7 @@ public class AnalysisHabit {
             for(int j=0; j < rows ; j++){
 
                 if(groupDeviceActivityArray[i][j] != null) {
+
 //                    System.out.print(" [] " + groupDeviceActivityArray[i][j].getId()
 //                            + " - " + groupDeviceActivityArray[i][j].getDatetime());
 
@@ -174,7 +171,13 @@ public class AnalysisHabit {
                 deviceActivityDetail.put("countOn",countTurnOn);
                 deviceActivityDetail.put("countOff",countTurnOff);
                 deviceActivityDetail.put("countTurnRed",countTurnRed);
+                deviceActivityDetail.put("countTurnGreen",countTurnGreen);
+                deviceActivityDetail.put("countTurnBlue",countTurnBlue);
+                deviceActivityDetail.put("countTurnYellow",countTurnYellow);
+                deviceActivityDetail.put("countTurnViolet",countTurnViolet);
+                deviceActivityDetail.put("countTurnAqua",countTurnAqua);
                 deviceActivityDetail.put("countTurnWhite",countTurnWhite);
+                deviceActivityDetail.put("power",50);
 
                 deviceActivityList.add(deviceActivityDetail);
 
@@ -183,7 +186,7 @@ public class AnalysisHabit {
 
             }
 
-            //System.out.println();
+          //  System.out.println();
         }
 
         //System.out.println(timeGroupDetails.toJSONString());
@@ -259,13 +262,15 @@ public class AnalysisHabit {
             for(int j=0; j < rows ; j++){
 
                 if(groupTimeActivityArray[i][j] != null) {
-                    //System.out.print(" | " + groupTimeActivityArray[i][j].getId());
+                    //System.out.print(" | " + groupTimeActivityArray[i][j].getId()+" - "+groupTimeActivityArray[i][j].getDatetime());
+                    System.out.print(" | " + groupTimeActivityArray[i][j].getId());
                     listGroupDeviceActivity.add(groupTimeActivityArray[i][j]);
                 }
 
             }
 
-            //System.out.println();
+            System.out.println();
+
             if(listGroupDeviceActivity.size()>10) {
                 timeGroup = groupTimeActivityArray[i][0].getDatetime();
                 JSONObject timeGroupDetails = new JSONObject();
@@ -291,35 +296,8 @@ public class AnalysisHabit {
 
     }
 
-    public void readData(){
 
-
-
-        try {
-            FileReader reader = new FileReader("MyData.txt");
-            BufferedReader bufferedReader = new BufferedReader(reader);
-
-            String line;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
-
-            }
-
-
-            //System.out.println(obj.getString("name")); //John
-
-            reader.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-
-    }
-
-    public int timeClassify(String timeInput){
+    public void timeClassify(String timeInput){
 
         ArrayList<Integer> listDurations = new ArrayList<>();
 
@@ -333,12 +311,10 @@ public class AnalysisHabit {
                 JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                 String time = (String) jsonObject.get("time");
 
-                int timeDurations = getMinuteDurations0(timeInput, time);
+                int timeDurations = getMinuteDurationsInput(timeInput, time);
                 listDurations.add(timeDurations);
 
             }
-
-            //System.out.println(lastName);
 
         } catch (org.json.simple.parser.ParseException e) {
             e.printStackTrace();
@@ -349,17 +325,14 @@ public class AnalysisHabit {
         }
 
         Integer minIndex = listDurations.indexOf(Collections.min(listDurations));
-        System.out.println("Min durations time: "+minIndex);
 
         analysisObject(minIndex);
 
-        return 0;
     }
 
     public void analysisObject(int index){
 
-        //ArrayList<DeviceActivityEntity> listActivity = new ArrayList<>();
-
+        listActivity.clear();
 
         try {
             Object obj = new JSONParser().parse(new FileReader("MyData.txt"));
@@ -379,12 +352,26 @@ public class AnalysisHabit {
                 long countOn = (long) deviceObject.get("countOn");
                 long countOff = (long) deviceObject.get("countOff");
                 long countTurnRed = (long) deviceObject.get("countTurnRed");
+                long countTurnGreen = (long) deviceObject.get("countTurnGreen");
+                long countTurnBlue = (long) deviceObject.get("countTurnBlue");
+                long countTurnYellow = (long) deviceObject.get("countTurnYellow");
+                long countTurnViolet = (long) deviceObject.get("countTurnViolet");
+                long countTurnAqua = (long) deviceObject.get("countTurnAqua");
                 long countTurnWhite = (long) deviceObject.get("countTurnWhite");
+
+                List<Long> listColorCount = new ArrayList<Long>();
+                listColorCount.add(countTurnRed);
+                listColorCount.add(countTurnGreen);
+                listColorCount.add(countTurnBlue);
+                listColorCount.add(countTurnYellow);
+                listColorCount.add(countTurnViolet);
+                listColorCount.add(countTurnAqua);
+                listColorCount.add(countTurnWhite);
 
                 deviceActivityEntity.setId(i);
                 deviceActivityEntity.setDatetime(time);
                 deviceActivityEntity.setDeviceid((int) id);
-                deviceActivityEntity.setLightcolor("WHITE");
+                deviceActivityEntity.setLightcolor(findColorLight(listColorCount));
                 deviceActivityEntity.setPoweron(findPowerStatus(countOn,countOff));
                 deviceActivityEntity.setPowervalue(50);
 
@@ -398,29 +385,45 @@ public class AnalysisHabit {
             e.printStackTrace();
         }
 
-
     }
 
     public boolean findPowerStatus(long countOn, long countOff){
 
-        //System.out.println("Count On: "+countOn + " - Count Off"+countOff);
         if(countOn > countOff){
             return true;
         } else {
             return false;
         }
-        
 
     }
 
-    public int getMinuteDurations0(String firstDate, String secondDate){
+    public String findColorLight(List<Long> listColorCount){
+
+        List<String> listColorName = new ArrayList<String>();
+        listColorName.add("RED");
+        listColorName.add("GREEN");
+        listColorName.add("BLUE");
+        listColorName.add("YELLOW");
+        listColorName.add("VIOLET");
+        listColorName.add("AQUA");
+        listColorName.add("WHITE");
+
+        Integer maxIndex = listColorCount.indexOf(Collections.max(listColorCount));
+
+        if(Collections.max(listColorCount) == 0){
+            return "NONE";
+        }
+
+        return listColorName.get(maxIndex);
+
+    }
+
+    public int getMinuteDurationsInput(String firstDate, String secondDate){
 
         int result = 0;
 
-        String[] strFirstDateCut = firstDate.split(" ");
         String[] strSecondDateCut = secondDate.split(" ");
 
-        firstDate = strFirstDateCut[1];
         secondDate = strSecondDateCut[1];
 
         //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-yy hh:mm:ss");
@@ -429,7 +432,7 @@ public class AnalysisHabit {
         try {
             Date dateTime1 = timeFormat.parse(firstDate);
             Date dateTime2 = timeFormat.parse(secondDate);
-            
+
             long diffInMillies = Math.abs(dateTime2.getTime() - dateTime1.getTime());
             long minutesDurations = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
 

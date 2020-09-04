@@ -52,7 +52,7 @@ public class HouseDeviceRestController {
 
     @CrossOrigin
     @RequestMapping(value = "/analysis_activity_data", method = RequestMethod.GET)
-    public ResponseEntity<List<DeviceActivityEntity>> getActivitiesByToken(@RequestHeader(name="Authorization") String token) {
+    public String getActivitiesByToken(@RequestHeader(name="Authorization") String token) {
 
         String username = jwtService.getUsernameFromToken(token);
 
@@ -63,10 +63,26 @@ public class HouseDeviceRestController {
         List<DeviceActivityEntity> listResponseEntity
                 = deviceActivityService.findAllByUserName(username);
 
-        //analysisHabit.createGroupTimeActivityArray(listResponseEntity);
+        System.out.println("");
+        System.out.println("");
 
-        analysisHabit.readData();
-        int x = analysisHabit.timeClassify("2020-09-01 20:07:05");
+        analysisHabit.createGroupTimeActivityArray(listResponseEntity);
+
+        return "OK";
+    }
+
+
+    @CrossOrigin
+    @RequestMapping(value = "/suggest_habit", method = RequestMethod.GET)
+    public ResponseEntity<List<DeviceActivityEntity>> getSuggestHabit(@RequestHeader(name="Authorization") String token,@RequestParam String time) {
+
+        String username = jwtService.getUsernameFromToken(token);
+        List<HouseDeviceEntity> listHouseDevice = houseDeviceService.findAllByUserName(username);
+
+        AnalysisHabit analysisHabit = new AnalysisHabit(listHouseDevice);
+
+        //int x = analysisHabit.timeClassify("2020-09-01 20:07:05");
+        analysisHabit.timeClassify(time);
 
         return new ResponseEntity<List<DeviceActivityEntity>>(AnalysisHabit.listActivity, HttpStatus.OK);
     }
