@@ -90,7 +90,7 @@ public class NodeMQTTController {
         //int lightValue = 255;
         int powerValue = 0;
 
-        if(type.equals("Fan") || type.equals("Glass") || type.equals("Door")) {
+        if(type.equals("Fan") || type.equals("Purifier") || type.equals("Glass") || type.equals("Door")) {
 
             if (power != null) {
 
@@ -223,7 +223,7 @@ public class NodeMQTTController {
     public ResponseEntity<String> sendMessage(String message, String topic){
 
         int qos             = 0;
-        String broker       = "tcp://tailor.cloudmqtt.com:11359";
+        String broker       = "tcp://broker.mqttdashboard.com:1883";
         String clientId     = "JavaSample";
         MemoryPersistence persistence = new MemoryPersistence();
 
